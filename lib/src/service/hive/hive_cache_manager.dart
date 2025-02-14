@@ -4,6 +4,13 @@ import 'package:cache_manager/src/core/model/cache_item.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
+/// [TR] HiveCacheManager sınıfı, Hive veritabanı kullanarak önbellek yönetimi sağlar.
+/// Bu sınıf, verileri önbelleğe eklemek, almak ve silmek için gerekli işlemleri içerir.
+/// Ayrıca, önbellek öğelerinin belirli bir süre için geçerli olmasını sağlar.
+/// [EN] The HiveCacheManager class provides cache management using the Hive database.
+/// This class includes operations for adding, retrieving, and deleting cached data,
+/// and also ensures that cache items are valid for a certain duration.
+
 class HiveCacheManager extends CacheManager {
   HiveCacheManager({super.path});
 
@@ -12,7 +19,9 @@ class HiveCacheManager extends CacheManager {
     final directory = path ?? (await getApplicationDocumentsDirectory()).path;
     Hive.init(directory);
 
-    for (final item in items) {}
+    /*    for (final item in items) {
+      Hive.registerAdapter(item.runtimeType);
+    } */
   }
 
   @override
@@ -20,6 +29,7 @@ class HiveCacheManager extends CacheManager {
 
   Future<Box> _openBox(String boxName) async => await Hive.openBox(boxName);
 
+  @override
   Future<void> setCache<T>(
     String boxName,
     String key,
@@ -35,6 +45,7 @@ class HiveCacheManager extends CacheManager {
     await box.put(key, cacheItem.toJson(toJsonT));
   }
 
+  @override
   Future<T?> getCache<T>(
     String boxName,
     String key,
